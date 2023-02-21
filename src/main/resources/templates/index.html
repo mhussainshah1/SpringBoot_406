@@ -9,19 +9,19 @@
 
 <h2>Insecure Page</h2>
 
-<div sec:authorize = "isAuthenticated()">
+<div sec:authorize="isAuthenticated()">
     This content is only shown to authenticated users.<br/>
 
-    <div sec:authorize = "hasAuthority('ADMIN')">
+    <div sec:authorize="hasAuthority('ADMIN')">
         This section is only shown to administrators.
     </div>
 
-    <div sec:authorize = "hasAuthority('USER')">
+    <div sec:authorize="hasAuthority('USER')">
         This section is only shown to users.
     </div>
 
     Logged user:
-    <span sec:authentication = "name">
+    <span sec:authentication="name">
         The value of the "name" property of the authentication object should appear here.
     </span><br/>
 
@@ -29,7 +29,7 @@
 
 </div>
 
-<div sec:authorize = "isAnonymous()">
+<div sec:authorize="isAnonymous()">
     This content is only shown to anonymous user.
 </div>
 

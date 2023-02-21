@@ -19,40 +19,40 @@ public class HomeController {
     private UserService userService;
 
     @GetMapping("/register")
-    public String showRegistrationPage(Model model){
-        model.addAttribute("user",new User());
+    public String showRegistrationPage(Model model) {
+        model.addAttribute("user", new User());
         return "registration";
     }
 
     @PostMapping("/register")
-    public String processRegistrationPage(@Valid @ModelAttribute("user") User user, BindingResult result, Model model){
+    public String processRegistrationPage(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         model.addAttribute("user", user);
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             return "registration";
         } else {
             userService.saveUser(user);
             model.addAttribute("message", "User Account Created");
         }
-        return"index";
+        return "index";
     }
 
     @RequestMapping("/")
-    public String index(){
+    public String index() {
         return "index";
     }
 
     @RequestMapping("/login")
-    public String login(){
+    public String login() {
         return "login";
     }
 
     @RequestMapping("/admin")
-    public String admin(){
+    public String admin() {
         return "admin";
     }
 
     @RequestMapping("/secure")
-    public String secure(Principal principal, Model model){
+    public String secure(Principal principal, Model model) {
         User myuser = ((CustomerUserDetails)
                 ((UsernamePasswordAuthenticationToken) principal)
                         .getPrincipal())
