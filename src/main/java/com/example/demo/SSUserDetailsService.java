@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,9 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Transactional
 @Service
@@ -41,13 +40,21 @@ public class SSUserDetailsService implements UserDetailsService {
         }
     }
 
+    private String[] getRoles(User appUser) {
+        List<String> roles = new ArrayList<>();
+        for (Role role : appUser.getRoles()) {
+            roles.add(role.getRole());
+        }
+        return Arrays.copyOf(roles.toArray(), roles.size(), String[].class);
+    }
+
     private Set<GrantedAuthority> getAuthorities(User appUser) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         for (Role role : appUser.getRoles()) {
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getRole());
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" +role.getRole());
             authorities.add(grantedAuthority);
         }
-        System.out.println("User authorities are" + authorities.toString());
+        System.out.println("User authorities are" + authorities);
         return authorities;
     }
 }
