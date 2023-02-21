@@ -8,6 +8,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -27,28 +28,21 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests()
-                .requestMatchers("/", "/h2-console/**", "/register").permitAll()//hasAnyRole("USER","ADMIN")
-                .requestMatchers("/admin").hasRole("ADMIN")//.hasAuthority("ROLE_ADMIN")
-                .anyRequest().authenticated()
-
-                .and()
-
-                .formLogin().loginPage("/login").permitAll()
-
-                .and()
-
-                .logout()
-                .logoutUrl("/logout")//.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login?logout").permitAll()
-
-                .and()
-
-                .httpBasic(Customizer.withDefaults());
         http
-                .csrf().disable();
-        http
-                .headers().frameOptions().disable();
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/", "/h2-console/**", "/register").permitAll()//hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/admin").hasRole("ADMIN")//.hasAuthority("ROLE_ADMIN")
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login").permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")//.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login?logout").permitAll())
+                .httpBasic(Customizer.withDefaults())
+                .csrf(CsrfConfigurer::disable)
+                .headers(headers -> headers
+                        .frameOptions()
+                        .disable());
         return http.build();
     }
 
