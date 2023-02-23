@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +14,9 @@ import java.util.*;
 @Transactional
 @Service
 public class SSUserDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
 
-    public SSUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -51,7 +50,7 @@ public class SSUserDetailsService implements UserDetailsService {
     private Set<GrantedAuthority> getAuthorities(User appUser) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         for (Role role : appUser.getRoles()) {
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" +role.getRole());
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + role.getRole());
             authorities.add(grantedAuthority);
         }
         System.out.println("User authorities are" + authorities);
